@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Since My Last Day</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .countup {
+      font-size: 2rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .countup span {
+      display: inline-block;
+      min-width: 90px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Time Since My Last Day</h1>
+  <div class="countup" id="countup">
+    Loading...
+  </div>
+
+  <script>
+    function updateCountup() {
+      // Set last day date: 2nd September at 00:00 GMT+8
+      const lastDay = new Date('2025-09-02T00:00:00+08:00');
+      const now = new Date();
+
+      const diffMs = lastDay - now ;
+
+      if (diffMs < 0) {
+        document.getElementById("countup").innerHTML = "The date is in the future.";
+        return;
+      }
+
+      const seconds = Math.floor(diffMs / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+
+      const displayHours = hours % 24;
+      const displayMinutes = minutes % 60;
+      const displaySeconds = seconds % 60;
+
+      document.getElementById("countup").innerHTML =
+        `<span><strong>${days}</strong> Days</span>
+         <span><strong>${displayHours}</strong> Hours</span>
+         <span><strong>${displayMinutes}</strong> Minutes</span>
+         <span><strong>${displaySeconds}</strong> Seconds</span>`;
+    }
+
+    setInterval(updateCountup, 1000);
+    updateCountup(); // initial call
+  </script>
+</body>
+</html>
