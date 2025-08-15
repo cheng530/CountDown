@@ -1,40 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Since My Last Day</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .countup {
+      font-size: 2rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .countup span {
+      display: inline-block;
+      min-width: 90px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Time Since My Last Day</h1>
+  <div class="countup" id="countup">
+    Loading...
+  </div>
+
 <script>
-function updateCountup() {
-  // Set last day date: 2nd September at 00:00 GMT+8
-  const lastDay = new Date('2025-08-29T00:00:00+08:00');
-  const now = new Date();
-
-  let start = new Date(lastDay);
-  let end = new Date(now);
-
-  // Make sure we always go forward in time
-  if (end < start) {
-    document.getElementById("countup").innerHTML = "The date is in the future.";
-    return;
-  }
-
-  // Count weekdays only
-  let weekdayMs = 0;
+function getWeekdayDiffMs(start, end) {
+  let totalMs = 0;
   let current = new Date(start);
 
   while (current < end) {
     const day = current.getDay(); // 0 = Sun, 6 = Sat
+    let next = new Date(current);
+    next.setSeconds(next.getSeconds() + 1); // step by 1 second
+
     if (day !== 0 && day !== 6) {
-      // Weekday
-      weekdayMs += 24 * 60 * 60 * 1000; // add 1 day in ms
+      totalMs += 1000; // only add if weekday
     }
-    current.setDate(current.getDate() + 1);
+    current = next;
+  }
+  return totalMs;
+}
+
+function updateCountup() {
+  const  now = new Date('2025-08-29T00:00:00+08:00');
+  const lastDay = new Date();
+
+  if (now < lastDay) {
+    document.getElementById("countup").innerHTML = "The date is in the future.";
+    return;
   }
 
-  // Add the leftover hours/minutes/seconds for the current day if it's a weekday
-  const todayDay = end.getDay();
-  if (todayDay !== 0 && todayDay !== 6) {
-    // Add partial day
-    const msThisDay = end - new Date(end.getFullYear(), end.getMonth(), end.getDate());
-    weekdayMs += msThisDay;
-  }
+  const diffMs = getWeekdayDiffMs(lastDay, now);
 
-  const seconds = Math.floor(weekdayMs / 1000);
+  const seconds = Math.floor(diffMs / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
@@ -53,3 +90,5 @@ function updateCountup() {
 setInterval(updateCountup, 1000);
 updateCountup();
 </script>
+</body>
+</html>
